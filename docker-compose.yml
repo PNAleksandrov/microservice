@@ -1,0 +1,28 @@
+version: '3.5'
+
+services:
+
+  db:
+    restart: always
+    image: postgres:14.6
+    volumes:
+      - /microservice/db
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+    ports:
+      - 5432:5432
+
+  microservice:
+    build: ./
+#    command: ./main.py
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    network_mode: host
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
