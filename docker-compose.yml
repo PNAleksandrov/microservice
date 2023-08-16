@@ -3,26 +3,33 @@ version: '3.5'
 services:
 
   db:
+    build: ./db/
+    container_name: dbpost
     restart: always
-    image: postgres:14.6
     volumes:
       - /microservice/db
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=admin
+#      - POSTGRES_DB=postgres
+#      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postpass
+    networks:
+      - appnet
     ports:
       - 5432:5432
 
+
   microservice:
     build: ./
-#    command: ./main.py
     ports:
       - 8080:8080
+    restart: always
     depends_on:
       - db
-    network_mode: host
+    networks:
+      - appnet
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=admin
+      - POSTGRES_PASSWORD=postpass
+networks:
+  appnet:
+    name: appnet
+    driver: bridge
